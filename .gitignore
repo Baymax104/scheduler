@@ -27,3 +27,5 @@ dist*
 *.iml
 out
 gen
+
+*storybook.log

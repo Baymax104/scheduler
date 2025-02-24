@@ -7,7 +7,6 @@ import SideBar from "./components/SideBar.vue";
     <SideBar/>
 
     <div class="flex-1 bg-gray-100 p-6">
-      <RouterView/>
     </div>
   </div>
 </template>
