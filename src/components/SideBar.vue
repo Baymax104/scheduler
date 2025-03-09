@@ -16,7 +16,7 @@ const navigations = ref<Array<Navigation>>([
   },
   {
     index: 1,
-    route: "/event",
+    route: "/task",
     title: "任务管理",
     icon: "material-symbols:format-list-bulleted-rounded"
   }

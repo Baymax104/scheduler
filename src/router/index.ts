@@ -8,12 +8,12 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "Time",
+      name: "Schedule",
       component: ScheduleScreen,
     },
     {
-      path: "/course",
-      name: "Course",
+      path: "/task",
+      name: "Task",
       component: TaskScreen,
     }
   ]
