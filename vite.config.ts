@@ -1,12 +1,14 @@
 import { defineConfig } from 'vite'
 import path from 'node:path'
 import electron from 'vite-plugin-electron/simple'
+import tailwindcss from "@tailwindcss/vite";
 import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    tailwindcss(),
     electron({
       main: {
         // Shortcut of `build.lib.entry`.

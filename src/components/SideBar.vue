@@ -1,24 +1,53 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import CourseItem from "@/components/CourseItem.vue";
-import Course from "@/model/Course.ts";
+import { Icon } from "@iconify/vue";
+import { useRouter } from "vue-router";
+import { Navigation } from "@/types/models";
 
-const items = ref([
-  new Course('test1', '测试1'),
-  new Course('test2', '测试2'),
-  new Course('test3', '测试3'),
-  new Course('test4', '测试4'),
+const router = useRouter();
+const selected = ref(0)
+
+const navigations = ref<Array<Navigation>>([
+  {
+    index: 0,
+    route: "/",
+    title: "计划表",
+    icon: "material-symbols:table-outline",
+  },
+  {
+    index: 1,
+    route: "/event",
+    title: "任务管理",
+    icon: "material-symbols:format-list-bulleted-rounded"
+  }
 ])
 
-function onItemClick(item: Course) {
-  alert(item.id)
+function onNavigate(nav: Navigation) {
+  router.push(nav.route)
+  selected.value = nav.index
 }
 
 </script>
 
 <template>
-  <div class="container flex flex-col bg-gray-200 text-black w-1/5 p-2 gap-2">
-    <CourseItem :item="item" @click="onItemClick" v-for="item in items" :key="item.id" class="w-full"/>
+  <div class="flex flex-col items-center bg-gray-200 text-black w-16 h-full">
+    <template v-for="nav in navigations" :key="nav.index">
+      <div :data-tip="nav.title" class="tooltip tooltip-right">
+        <button
+          :class="{
+          'bg-primary-500': selected === nav.index,
+          'hover:bg-gray-300': selected !== nav.index
+        }"
+          class="mb-2 mt-2 rounded p-2 group"
+          @click="onNavigate(nav)">
+          <Icon
+            :class="selected === nav.index ? 'text-white' : 'text-black'"
+            :icon="nav.icon"
+            height="25"
+            width="25"/>
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 

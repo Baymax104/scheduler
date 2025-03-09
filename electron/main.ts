@@ -34,6 +34,8 @@ function createWindow() {
     height: 700,
     width: 1000,
     title: "Course Scheduler",
+    minWidth: 1000,
+    minHeight: 700,
   })
 
   // Test active push message to Renderer-process.

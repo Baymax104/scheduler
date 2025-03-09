@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import TimeScreen from "@/screen/TimeScreen.vue";
-import CourseScreen from "@/screen/CourseScreen.vue";
+import ScheduleScreen from "@/screen/ScheduleScreen.vue";
+import TaskScreen from "@/screen/TaskScreen.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -9,12 +9,12 @@ export const router = createRouter({
     {
       path: "/",
       name: "Time",
-      component: TimeScreen,
+      component: ScheduleScreen,
     },
     {
       path: "/course",
       name: "Course",
-      component: CourseScreen,
+      component: TaskScreen,
     }
   ]
 })
