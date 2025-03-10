@@ -20,7 +20,7 @@ const schedulerRef = useTemplateRef("scheduler")
 </script>
 
 <template>
-  <div class="flex flex-col p-4 w-full h-full">
+  <div class="flex flex-col size-full">
     <div class="flex h-[100px] w-full bg-red-500">
 
     </div>
@@ -29,7 +29,7 @@ const schedulerRef = useTemplateRef("scheduler")
       ref="scheduler"
       v-slot="{ timeText, event }"
       :onSelect="onSelect">
-      <div class="flex flex-col items-center justify-center w-full h-full">
+      <div class="flex flex-col items-center justify-center size-full">
         <div>{{timeText}}</div>
         <div>{{event.title}}</div>
       </div>

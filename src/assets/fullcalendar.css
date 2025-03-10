@@ -12,3 +12,6 @@
   overflow-y: scroll !important;
 }
 
+.fc-scroller::-webkit-scrollbar {
+  display: none;
+}
