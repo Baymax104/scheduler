@@ -1,6 +1,7 @@
 import Scheduler from "@/components/Scheduler.vue";
 import { StoryObj } from "@storybook/vue3";
-import { EventInput } from "@fullcalendar/core";
+import Schedule from "@/model/Schedule.ts";
+import Task from "@/model/Task.ts";
 
 export default {
   title: "Scheduler",
@@ -11,13 +12,14 @@ type Story = StoryObj<typeof Scheduler>
 
 export const Basic: Story = {
   args: {
-    onSelect(arg): EventInput {
-      return {
-        title: "test",
-        start: arg.start,
-        end: arg.end,
-        allDay: arg.allDay
-      }
+    onSelect(arg): Schedule {
+      return new Schedule({
+        task: new Task({
+          name: "Test",
+          comment: "TestContent",
+        }),
+        ...arg
+      })
     },
   }
 }

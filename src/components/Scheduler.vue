@@ -5,7 +5,8 @@ import {
   CalendarOptions,
   DateInput,
   DateSpanApi,
-  EventAddArg, EventApi,
+  EventAddArg,
+  EventApi,
   EventChangeArg,
   EventClickArg,
   EventRemoveArg,
@@ -54,7 +55,7 @@ const calendarOptions = reactive<CalendarOptions>({
   slotMaxTime: "22:00",
   allDaySlot: false,
   initialView: "timeGridWeek",
-  contentHeight: "100%",
+  contentHeight: 600,
   events: [],
   firstDay: 1,
   locale: "zh-cn",
@@ -99,7 +100,10 @@ defineExpose({
 </script>
 
 <template>
-  <FullCalendar ref="fullCalendar" #eventContent="{ event, timeText }" :options="calendarOptions">
+  <FullCalendar
+    ref="fullCalendar"
+    #eventContent="{ event, timeText }"
+    :options="calendarOptions">
     <slot :timeText="timeText" :event="event"></slot>
   </FullCalendar>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from "vue";
+import { useTemplateRef } from "vue";
 import Scheduler from "@/components/Scheduler.vue";
 import { DateSpanApi } from "@fullcalendar/core";
 import Schedule from "@/model/Schedule.ts";
@@ -20,8 +20,8 @@ const schedulerRef = useTemplateRef("scheduler")
 </script>
 
 <template>
-  <div class="container flex flex-col h-screen">
-    <div class="container flex">
+  <div class="flex flex-col p-4 w-full h-full">
+    <div class="flex h-[100px] w-full bg-red-500">
 
     </div>
     <Scheduler

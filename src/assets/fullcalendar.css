@@ -1,0 +1,14 @@
+:root {
+  --fc-event-bg-color: #00000000;
+  --fc-event-border-color: #00000000;
+}
+
+.fc-timegrid-slot {
+  height: 1.8em;
+}
+
+.fc-scroller {
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+}
+

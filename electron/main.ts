@@ -27,21 +27,29 @@ function createWindow() {
   Menu.setApplicationMenu(null)
 
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
-    height: 700,
-    width: 1000,
-    title: "Course Scheduler",
-    minWidth: 1000,
-    minHeight: 700,
+    icon: path.join(process.env.VITE_PUBLIC, 'logo.png'),
+    height: 800,
+    width: 1200,
+    title: "Scheduler",
+    minWidth: 1200,
+    minHeight: 800,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: 'rgba(0,0,0,0)',
+      height: 35,
+      symbolColor: 'black'
+    }
   })
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
   })
+
+  // win.webContents.openDevTools({mode: "undocked"})
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
