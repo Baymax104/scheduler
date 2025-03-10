@@ -1,31 +1,40 @@
 <script setup lang="ts">
 import { onMounted, useTemplateRef } from "vue";
 import Scheduler from "@/components/Scheduler.vue";
-import { DateSelectArg, EventInput } from "@fullcalendar/core";
+import { DateSpanApi } from "@fullcalendar/core";
+import Schedule from "@/model/Schedule.ts";
+import Task from "@/model/Task.ts";
 
-function onSelect(arg: DateSelectArg): EventInput {
-  return {
-    title: "test",
-    start: arg.startStr,
-    end: arg.endStr,
-    allDay: arg.allDay
-  }
+function onSelect(arg: DateSpanApi): Schedule {
+  return new Schedule({
+    task: new Task({
+      name: "Test",
+      comment: "TestContent",
+    }),
+    ...arg
+  })
 }
 
 const schedulerRef = useTemplateRef("scheduler")
 
-onMounted(() => {
-})
 </script>
 
 <template>
-  <button class="btn">点我</button>
-  <Scheduler
-    ref="scheduler"
-    v-slot="{ timeText, event }" :onSelect="onSelect">
-    <div>{{timeText}}</div>
-    <div>{{event.title}}</div>
-  </Scheduler>
+  <div class="container flex flex-col h-screen">
+    <div class="container flex">
+
+    </div>
+    <Scheduler
+      class="flex-1"
+      ref="scheduler"
+      v-slot="{ timeText, event }"
+      :onSelect="onSelect">
+      <div class="flex flex-col items-center justify-center w-full h-full">
+        <div>{{timeText}}</div>
+        <div>{{event.title}}</div>
+      </div>
+    </Scheduler>
+  </div>
 </template>
 
 <style scoped>

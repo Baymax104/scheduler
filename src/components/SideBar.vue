@@ -2,10 +2,16 @@
 import { ref } from 'vue'
 import { Icon } from "@iconify/vue";
 import { useRouter } from "vue-router";
-import { Navigation } from "@/types/models";
 
 const router = useRouter();
 const selected = ref(0)
+
+interface Navigation {
+  index: number
+  route: string
+  title: string
+  icon: string
+}
 
 const navigations = ref<Array<Navigation>>([
   {
@@ -32,13 +38,13 @@ function onNavigate(nav: Navigation) {
 <template>
   <div class="flex flex-col items-center bg-gray-200 text-black w-16 h-full">
     <template v-for="nav in navigations" :key="nav.index">
-      <div :data-tip="nav.title" class="tooltip tooltip-right">
+      <div :data-tip="nav.title" class="tooltip tooltip-right transition delay-150">
         <button
           :class="{
-          'bg-primary-500': selected === nav.index,
-          'hover:bg-gray-300': selected !== nav.index
-        }"
-          class="mb-2 mt-2 rounded p-2 group"
+            'bg-primary-500': selected === nav.index,
+            'hover:bg-gray-300': selected !== nav.index
+          }"
+          class="mb-2 mt-2 rounded p-2 group transition-colors duration-200"
           @click="onNavigate(nav)">
           <Icon
             :class="selected === nav.index ? 'text-white' : 'text-black'"

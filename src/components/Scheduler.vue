@@ -4,11 +4,10 @@ import {
   CalendarApi,
   CalendarOptions,
   DateInput,
-  DateSelectArg,
-  EventAddArg,
+  DateSpanApi,
+  EventAddArg, EventApi,
   EventChangeArg,
   EventClickArg,
-  EventInput,
   EventRemoveArg,
   ViewApi,
 } from "@fullcalendar/core"
@@ -16,16 +15,10 @@ import FullCalendar from "@fullcalendar/vue3"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
+import Schedule from "@/model/Schedule.ts";
 
-const {
-  onSelect = arg => ({
-    title: "test",
-    start: arg.start,
-    end: arg.end,
-    allDay: arg.allDay
-  })
-} = defineProps<{
-  onSelect: (arg: DateSelectArg) => EventInput
+const {onSelect} = defineProps<{
+  onSelect: (arg: DateSpanApi) => Schedule
 }>()
 
 const emit = defineEmits<{
@@ -35,14 +28,12 @@ const emit = defineEmits<{
   eventRemove: [arg: EventRemoveArg],
 }>()
 
+defineSlots<{
+  default(props: { timeText: string, event: EventApi }): void
+}>()
 
 const calendarOptions = reactive<CalendarOptions>({
   plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-  // headerToolbar: {
-  //   left: "prev,next today",
-  //   center: "title",
-  //   right: "dayGridMonth,timeGridWeek",
-  // },
   headerToolbar: false,
   buttonText: {
     week: "周视图",
@@ -63,7 +54,7 @@ const calendarOptions = reactive<CalendarOptions>({
   slotMaxTime: "22:00",
   allDaySlot: false,
   initialView: "timeGridWeek",
-  height: "100%",
+  contentHeight: "100%",
   events: [],
   firstDay: 1,
   locale: "zh-cn",
@@ -75,9 +66,13 @@ const calendarOptions = reactive<CalendarOptions>({
   eventOverlap: true,
   select: arg => {
     const calendar = arg.view.calendar
-    const event = onSelect(arg)
+    const schedule = onSelect(arg)
     calendar.unselect()
-    calendar.addEvent(event)
+    calendar.addEvent({
+      ...schedule,
+      title: schedule.task.name,
+      color: schedule.task.color
+    })
   },
   eventClick: arg => emit("eventClick", arg),
   eventAdd: arg => emit("eventAdd", arg),
@@ -96,16 +91,16 @@ defineExpose({
   next: () => api.value?.next(),
   prev: () => api.value?.prev(),
   today: () => api.value?.today(),
-  changeView: (viewType: string) => api.value?.changeView(viewType),
+  gotoDayGridMonth: () => api.value?.changeView("dayGridMonth"),
+  gotoTimeGridWeek: () => api.value?.changeView("timeGridWeek"),
   gotoDate: (date: DateInput) => api.value?.gotoDate(date),
   getDate: () => api.value?.getDate(),
 })
 </script>
 
 <template>
-  <FullCalendar ref="fullCalendar" v-slot="{ event, timeText }" :options="calendarOptions">
-    <div>{{timeText}}</div>
-    <div>{{event.title}}</div>
+  <FullCalendar ref="fullCalendar" #eventContent="{ event, timeText }" :options="calendarOptions">
+    <slot :timeText="timeText" :event="event"></slot>
   </FullCalendar>
 </template>
 
