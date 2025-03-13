@@ -23,7 +23,7 @@ const navigations = ref<Array<Navigation>>([
   {
     index: 1,
     route: "/task",
-    title: "任务管理",
+    title: "事项管理",
     icon: "material-symbols:format-list-bulleted-rounded"
   }
 ])
@@ -38,7 +38,7 @@ function onNavigate(nav: Navigation) {
 <template>
   <div class="flex flex-col items-center bg-gray-200 text-black w-16 h-full">
     <template v-for="nav in navigations" :key="nav.index">
-      <div :data-tip="nav.title" class="tooltip tooltip-right transition delay-150">
+      <div :data-tip="nav.title" class="tooltip tooltip-right">
         <button
           :class="{
             'bg-primary-500': selected === nav.index,

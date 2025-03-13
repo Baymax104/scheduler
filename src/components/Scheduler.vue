@@ -16,7 +16,8 @@ import FullCalendar from "@fullcalendar/vue3"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
-import Schedule from "@/model/Schedule.ts";
+import Schedule from "@/model/schedule.ts";
+import { ViewType } from "@/model/globals.ts";
 
 const {onSelect} = defineProps<{
   onSelect: (arg: DateSpanApi) => Schedule
@@ -92,10 +93,10 @@ defineExpose({
   next: () => api.value?.next(),
   prev: () => api.value?.prev(),
   today: () => api.value?.today(),
-  gotoDayGridMonth: () => api.value?.changeView("dayGridMonth"),
-  gotoTimeGridWeek: () => api.value?.changeView("timeGridWeek"),
+  gotoDayGridMonth: () => api.value?.changeView(ViewType.DAY_MONTH),
+  gotoTimeGridWeek: () => api.value?.changeView(ViewType.TIME_WEEK),
   gotoDate: (date: DateInput) => api.value?.gotoDate(date),
-  getDate: () => api.value?.getDate(),
+  getDate: () => api.value != null ? api.value.getDate() : new Date(),
 })
 </script>
 

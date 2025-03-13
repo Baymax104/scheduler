@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import * as process from "node:process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -49,7 +50,7 @@ function createWindow() {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
   })
 
-  // win.webContents.openDevTools({mode: "undocked"})
+  win.webContents.openDevTools({mode: "undocked"})
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)

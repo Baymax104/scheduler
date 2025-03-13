@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useTemplateRef } from "vue";
+import { onMounted, useTemplateRef } from "vue";
 import Scheduler from "@/components/Scheduler.vue";
 import { DateSpanApi } from "@fullcalendar/core";
-import Schedule from "@/model/Schedule.ts";
-import Task from "@/model/Task.ts";
+import Schedule from "@/model/schedule.ts";
+import Task from "@/model/task.ts";
+import SchedulerHeader from "@/components/SchedulerHeader.vue";
+import { ViewType } from "@/model/globals.ts";
 
 function onSelect(arg: DateSpanApi): Schedule {
   return new Schedule({
@@ -17,13 +19,21 @@ function onSelect(arg: DateSpanApi): Schedule {
 
 const schedulerRef = useTemplateRef("scheduler")
 
+
+onMounted(() => {
+})
+
 </script>
 
 <template>
   <div class="flex flex-col size-full">
-    <div class="flex h-[100px] w-full bg-red-500">
-
-    </div>
+    <SchedulerHeader
+      :currentDate="schedulerRef ? schedulerRef!!.getDate() : new Date()"
+      :eventCount="5"
+      :viewType="ViewType.DAY_MONTH"
+      class="mb-2"
+      @nextClick="schedulerRef?.next"
+      @prevClick="schedulerRef?.prev"/>
     <Scheduler
       class="flex-1"
       ref="scheduler"
@@ -38,5 +48,4 @@ const schedulerRef = useTemplateRef("scheduler")
 </template>
 
 <style scoped>
-
 </style>

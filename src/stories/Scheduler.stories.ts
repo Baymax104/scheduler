@@ -1,7 +1,7 @@
 import Scheduler from "@/components/Scheduler.vue";
 import { StoryObj } from "@storybook/vue3";
-import Schedule from "@/model/Schedule.ts";
-import Task from "@/model/Task.ts";
+import Schedule from "@/model/schedule.ts";
+import Task from "@/model/task.ts";
 
 export default {
   title: "Scheduler",
