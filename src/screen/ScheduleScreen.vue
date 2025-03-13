@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from "vue";
+import { onMounted, ref, useTemplateRef } from "vue";
 import Scheduler from "@/components/Scheduler.vue";
 import { DateSpanApi } from "@fullcalendar/core";
 import Schedule from "@/model/schedule.ts";
 import Task from "@/model/task.ts";
 import SchedulerHeader from "@/components/SchedulerHeader.vue";
 import { ViewType } from "@/model/globals.ts";
+
+const schedulerRef = useTemplateRef("scheduler")
+
+const viewType = ref(ViewType.WEEK)
 
 function onSelect(arg: DateSpanApi): Schedule {
   return new Schedule({
@@ -17,10 +21,8 @@ function onSelect(arg: DateSpanApi): Schedule {
   })
 }
 
-const schedulerRef = useTemplateRef("scheduler")
-
-
 onMounted(() => {
+  viewType.value = schedulerRef.value!!.currentView
 })
 
 </script>
@@ -28,12 +30,13 @@ onMounted(() => {
 <template>
   <div class="flex flex-col size-full">
     <SchedulerHeader
-      :currentDate="schedulerRef ? schedulerRef!!.getDate() : new Date()"
-      :eventCount="5"
-      :viewType="ViewType.DAY_MONTH"
+      :viewType="viewType"
       class="mb-2"
       @nextClick="schedulerRef?.next"
-      @prevClick="schedulerRef?.prev"/>
+      @gotoDate="schedulerRef?.gotoDate"
+      @monthClick="schedulerRef?.switchView(ViewType.MONTH)"
+      @prevClick="schedulerRef?.prev"
+      @weekClick="schedulerRef?.switchView(ViewType.WEEK)"/>
     <Scheduler
       class="flex-1"
       ref="scheduler"

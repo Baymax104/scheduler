@@ -41,10 +41,10 @@ function onNavigate(nav: Navigation) {
       <div :data-tip="nav.title" class="tooltip tooltip-right">
         <button
           :class="{
-            'bg-primary-500': selected === nav.index,
-            'hover:bg-gray-300': selected !== nav.index
+            'btn-primary btn-active': selected === nav.index,
+            'bg-gray-200 hover:bg-gray-300': selected !== nav.index
           }"
-          class="mb-2 mt-2 rounded p-2 group transition-colors duration-200"
+          class="btn mb-2 mt-2 rounded p-2 group"
           @click="onNavigate(nav)">
           <Icon
             :class="selected === nav.index ? 'text-white' : 'text-black'"

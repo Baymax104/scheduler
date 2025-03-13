@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref, useTemplateRef } from "vue"
+import { onMounted, reactive, Ref, ref, useTemplateRef } from "vue"
 import {
   CalendarApi,
   CalendarOptions,
@@ -34,28 +34,30 @@ defineSlots<{
   default(props: { timeText: string, event: EventApi }): void
 }>()
 
+const currentView = ref<ViewType>(ViewType.WEEK)
+
 const calendarOptions = reactive<CalendarOptions>({
   plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
   headerToolbar: false,
-  buttonText: {
-    week: "周视图",
-    month: "月视图",
-    today: "今天"
-  },
-  dayHeaderFormat: {
-    weekday: "short",
-    month: "2-digit",
-    day: "2-digit",
-  },
-  slotLabelFormat: {
-    hourCycle: "h24",
-    hour: "2-digit",
-    minute: "2-digit",
-  },
-  slotMinTime: "08:00",
-  slotMaxTime: "22:00",
-  allDaySlot: false,
   initialView: "timeGridWeek",
+  views: {
+    timeGridWeek: {
+      dayHeaderFormat: {
+        weekday: "short",
+        month: "2-digit",
+        day: "2-digit",
+      },
+      slotLabelFormat: {
+        hourCycle: "h24",
+        hour: "2-digit",
+        minute: "2-digit",
+      },
+      slotMinTime: "08:00",
+      slotMaxTime: "22:00",
+      allDaySlot: false,
+    },
+    dayGridMonth: {}
+  },
   contentHeight: 600,
   events: [],
   firstDay: 1,
@@ -83,20 +85,22 @@ const calendarOptions = reactive<CalendarOptions>({
 })
 
 const calendarRef = useTemplateRef<ViewApi>("fullCalendar")
-const api = ref<CalendarApi | null>(null)
 
+let api: Ref<CalendarApi>
 onMounted(() => {
-  api.value = calendarRef.value!!.calendar
+  api = ref(calendarRef.value!!.calendar)
 })
 
 defineExpose({
-  next: () => api.value?.next(),
-  prev: () => api.value?.prev(),
-  today: () => api.value?.today(),
-  gotoDayGridMonth: () => api.value?.changeView(ViewType.DAY_MONTH),
-  gotoTimeGridWeek: () => api.value?.changeView(ViewType.TIME_WEEK),
-  gotoDate: (date: DateInput) => api.value?.gotoDate(date),
-  getDate: () => api.value != null ? api.value.getDate() : new Date(),
+  currentView: currentView,
+  next: () => api.value.next(),
+  prev: () => api.value.prev(),
+  today: () => api.value.today(),
+  gotoDate: (date: DateInput) => api.value.gotoDate(date),
+  switchView(viewType: ViewType) {
+    api.value.changeView(viewType, new Date())
+    currentView.value = viewType
+  }
 })
 </script>
 

@@ -1,0 +1,5 @@
+@import '@vuepic/vue-datepicker/dist/main.css';
+
+.dp__main {
+  width: auto;
+}

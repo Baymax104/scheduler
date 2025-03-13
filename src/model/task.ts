@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import getRandomColor from "@/utils/color.ts";
+import { getRandomColor } from "@/utils/color.ts";
 
 export default class Task {
   id: string = uuid()

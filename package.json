@@ -17,6 +17,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
     "@tailwindcss/vite": "^4.0.12",
+    "@vuepic/vue-datepicker": "^11.0.1",
     "dayjs": "^1.11.13",
     "randomcolor": "^0.6.2",
     "uuid": "^11.1.0",
