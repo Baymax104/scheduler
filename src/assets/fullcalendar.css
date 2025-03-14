@@ -1,6 +1,7 @@
 :root {
   --fc-event-bg-color: #00000000;
   --fc-event-border-color: #00000000;
+  --fc-today-bg-color: #eef6ff;
   scrollbar-color: transparent transparent;
 }
 

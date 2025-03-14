@@ -3,6 +3,9 @@ import { Icon } from "@iconify/vue";
 import { ViewType } from "@/model/globals.ts";
 import { computed, ref } from "vue";
 import dayjs, { Dayjs } from "dayjs";
+import 'dayjs/locale/zh-cn'
+
+dayjs.locale("zh-cn")
 
 const {viewType} = defineProps<{
   viewType: ViewType
