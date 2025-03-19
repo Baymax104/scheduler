@@ -16,14 +16,15 @@ import FullCalendar from "@fullcalendar/vue3"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
-import Schedule from "@/model/schedule.ts";
-import { ViewType } from "@/model/globals.ts";
+import ScheduleEvent from "@/model/schedule-event.ts";
+import { ViewType } from "@/modules/scheduler/model/view-type.ts"
 
-const {onSelect} = defineProps<{
-  onSelect: (arg: DateSpanApi) => Schedule
+const {events} = defineProps<{
+  events: Array<ScheduleEvent>
 }>()
 
 const emit = defineEmits<{
+  select: [span: DateSpanApi]
   eventClick: [arg: EventClickArg],
   eventAdd: [arg: EventAddArg],
   eventChange: [arg: EventChangeArg],
@@ -31,10 +32,8 @@ const emit = defineEmits<{
 }>()
 
 defineSlots<{
-  default(props: { timeText: string, event: EventApi }): void
+  default(props: { event: ScheduleEvent | null }): void
 }>()
-
-const currentView = ref<ViewType>(ViewType.WEEK)
 
 const calendarOptions = reactive<CalendarOptions>({
   plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -59,7 +58,7 @@ const calendarOptions = reactive<CalendarOptions>({
     dayGridMonth: {}
   },
   contentHeight: 600,
-  events: [],
+  events: Array.from(events, (e) => ({...e, title: e.task.name})),
   firstDay: 1,
   locale: "zh-cn",
   editable: true,
@@ -68,16 +67,7 @@ const calendarOptions = reactive<CalendarOptions>({
   dayMaxEvents: true,
   weekends: true,
   eventOverlap: true,
-  select: arg => {
-    const calendar = arg.view.calendar
-    const schedule = onSelect(arg)
-    calendar.unselect()
-    calendar.addEvent({
-      ...schedule,
-      title: schedule.task.name,
-      color: schedule.task.color
-    })
-  },
+  select: arg => emit('select', arg),
   eventClick: arg => emit("eventClick", arg),
   eventAdd: arg => emit("eventAdd", arg),
   eventChange: arg => emit("eventChange", arg),
@@ -92,24 +82,38 @@ onMounted(() => {
 })
 
 defineExpose({
-  currentView: currentView,
   next: () => api.value.next(),
   prev: () => api.value.prev(),
   today: () => api.value.today(),
   gotoDate: (date: DateInput) => api.value.gotoDate(date),
-  switchView(viewType: ViewType) {
-    api.value.changeView(viewType, new Date())
-    currentView.value = viewType
-  }
+  switchView: (viewType: ViewType) => api.value.changeView(viewType, new Date()),
+  addEvent: (e: ScheduleEvent) => {
+    api.value.addEvent({...e, title: e.task.name})
+    api.value.unselect()
+  },
+  removeEvent: (e: ScheduleEvent) => api.value.getEvents().find((event) => e.id === event.id)?.remove()
 })
+
+function toScheduleEvent(event: EventApi): ScheduleEvent | null {
+  if (event.id === "" || event.extendedProps["task"] === undefined) {
+    return null
+  }
+  return {
+    id: event.id,
+    start: event.start!!,
+    end: event.end!!,
+    allDay: event.allDay,
+    task: event.extendedProps.task
+  }
+}
 </script>
 
 <template>
   <FullCalendar
     ref="fullCalendar"
-    #eventContent="{ event, timeText }"
+    #eventContent="{ event }"
     :options="calendarOptions">
-    <slot :timeText="timeText" :event="event"></slot>
+    <slot :event="toScheduleEvent(event)"></slot>
   </FullCalendar>
 </template>
 

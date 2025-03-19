@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 import Task from "@/model/task.ts";
 
-export default class Schedule {
+export default class ScheduleEvent {
   id: string = uuid()
   task: Task
   start: Date

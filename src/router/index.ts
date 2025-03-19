@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import ScheduleScreen from "@/screen/ScheduleScreen.vue";
-import TaskScreen from "@/screen/TaskScreen.vue";
+import ScheduleScreen from "@/modules/scheduler/ScheduleScreen.vue";
+import TaskScreen from "@/modules/task/TaskScreen.vue";
 
 export const router = createRouter({
   history: createWebHistory(),

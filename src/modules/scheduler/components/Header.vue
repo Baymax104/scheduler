@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { ViewType } from "@/model/globals.ts";
+import { ViewType } from "@/modules/scheduler/model/view-type.ts";
 import { computed, ref } from "vue";
 import dayjs, { Dayjs } from "dayjs";
 import 'dayjs/locale/zh-cn'
 
 dayjs.locale("zh-cn")
 
-const {viewType} = defineProps<{
-  viewType: ViewType
+const {currentView} = defineProps<{
+  currentView: ViewType
 }>()
 
 const emit = defineEmits<{
@@ -22,7 +22,7 @@ const emit = defineEmits<{
 const date = ref<Dayjs>(dayjs())
 
 const title = computed(() => {
-  if (viewType === ViewType.WEEK) {
+  if (currentView === ViewType.WEEK) {
     const start = date.value.startOf("week")
     const end = date.value.endOf("week")
     return `${start.format("MM/DD")} - ${end.format("MM/DD")}`
@@ -33,7 +33,7 @@ const title = computed(() => {
 
 function nextClick() {
   emit("nextClick")
-  if (viewType === ViewType.WEEK) {
+  if (currentView === ViewType.WEEK) {
     date.value = date.value.add(1, "week")
   } else {
     date.value = date.value.add(1, "month")
@@ -42,7 +42,7 @@ function nextClick() {
 
 function prevClick() {
   emit("prevClick")
-  if (viewType === ViewType.WEEK) {
+  if (currentView === ViewType.WEEK) {
     date.value = date.value.subtract(1, "week")
   } else {
     date.value = date.value.subtract(1, "month")
@@ -88,7 +88,7 @@ function onGotoDate(target: Date) {
 
     <div class="flex items-center gap-3">
       <button
-        class="box-border rounded-full hover:bg-gray-200 transition duration-150"
+        class="box-border rounded-full hover:bg-gray-200 transition duration-150 cursor-pointer"
         @click="prevClick">
         <Icon height="35" icon="ic:round-keyboard-arrow-left" width="35"/>
       </button>
@@ -96,7 +96,7 @@ function onGotoDate(target: Date) {
         <button class="font-bold text-2xl">{{title}}</button>
       </div>
       <button
-        class="box-border rounded-full hover:bg-gray-200 transition duration-150"
+        class="box-border rounded-full hover:bg-gray-200 transition duration-150 cursor-pointer"
         @click="nextClick">
         <Icon height="35" icon="ic:round-keyboard-arrow-right" width="35"/>
       </button>
@@ -104,13 +104,13 @@ function onGotoDate(target: Date) {
 
     <div class="join">
       <button
-        :class="{'btn-active': viewType === ViewType.WEEK}"
+        :class="{'btn-active': currentView === ViewType.WEEK}"
         class="btn btn-soft btn-primary rounded-l-full"
         @click="onWeekClick">
         周视图
       </button>
       <button
-        :class="{'btn-active': viewType === ViewType.MONTH}"
+        :class="{'btn-active': currentView === ViewType.MONTH}"
         class="btn btn-soft btn-primary rounded-r-full"
         @click="onMonthClick">
         月视图

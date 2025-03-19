@@ -2,11 +2,37 @@
   --fc-event-bg-color: #00000000;
   --fc-event-border-color: #00000000;
   --fc-today-bg-color: #eef6ff;
+  --fc-event-text-color: #000;
+  --fc-highlight-color: #eef6ff;
   scrollbar-color: transparent transparent;
 }
 
+.fc-event-main {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.fc-timegrid-event {
+  margin: 1px 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.fc-popover {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
 .fc-timegrid-slot {
-  height: 1.8em;
+  height: 40px !important;
+}
+
+.fc-daygrid-dot-event {
+  padding: 0 !important;
+}
+
+.fc-daygrid-event {
+  border-radius: 10px !important;
 }
 
 .fc-scroller {

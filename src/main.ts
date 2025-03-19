@@ -4,9 +4,26 @@ import App from './App.vue'
 import { router } from './router'
 
 import VueDatePicker from '@vuepic/vue-datepicker';
+import Toast, { PluginOptions, POSITION } from "vue-toastification"
+
+const options: PluginOptions = {
+  position: POSITION.TOP_CENTER,
+  timeout: 2500,
+  closeOnClick: true,
+  pauseOnFocusLoss: false,
+  pauseOnHover: false,
+  draggable: false,
+  draggablePercent: 0.6,
+  showCloseButtonOnHover: false,
+  hideProgressBar: true,
+  closeButton: false,
+  icon: true,
+  rtl: false
+}
 
 const app = createApp(App)
 app.use(router)
+app.use(Toast, options)
 app.component('VueDatePicker', VueDatePicker);
 app.mount('#app').$nextTick(() => {
   // Use contextBridge
