@@ -16,11 +16,11 @@ import FullCalendar from "@fullcalendar/vue3"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
-import ScheduleEvent from "@/model/schedule-event.ts";
+import Plan from "@/model/plan.ts";
 import { ViewType } from "@/modules/scheduler/model/view-type.ts"
 
 const {events} = defineProps<{
-  events: Array<ScheduleEvent>
+  events: Array<Plan>
 }>()
 
 const emit = defineEmits<{
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 }>()
 
 defineSlots<{
-  default(props: { event: ScheduleEvent | null }): void
+  default(props: { event: Plan | null }): void
 }>()
 
 const calendarOptions = reactive<CalendarOptions>({
@@ -87,14 +87,14 @@ defineExpose({
   today: () => api.value.today(),
   gotoDate: (date: DateInput) => api.value.gotoDate(date),
   switchView: (viewType: ViewType) => api.value.changeView(viewType, new Date()),
-  addEvent: (e: ScheduleEvent) => {
+  addEvent: (e: Plan) => {
     api.value.addEvent({...e, title: e.task.name})
     api.value.unselect()
   },
-  removeEvent: (e: ScheduleEvent) => api.value.getEvents().find((event) => e.id === event.id)?.remove()
+  removeEvent: (e: Plan) => api.value.getEvents().find((event) => e.id === event.id)?.remove()
 })
 
-function toScheduleEvent(event: EventApi): ScheduleEvent | null {
+function toPlan(event: EventApi): Plan | null {
   if (event.id === "" || event.extendedProps["task"] === undefined) {
     return null
   }
@@ -103,7 +103,9 @@ function toScheduleEvent(event: EventApi): ScheduleEvent | null {
     start: event.start!!,
     end: event.end!!,
     allDay: event.allDay,
-    task: event.extendedProps.task
+    task: event.extendedProps.task,
+    color: event.backgroundColor,
+    comment: event.extendedProps.comment
   }
 }
 </script>
@@ -113,7 +115,7 @@ function toScheduleEvent(event: EventApi): ScheduleEvent | null {
     ref="fullCalendar"
     #eventContent="{ event }"
     :options="calendarOptions">
-    <slot :event="toScheduleEvent(event)"></slot>
+    <slot :event="toPlan(event)"></slot>
   </FullCalendar>
 </template>
 

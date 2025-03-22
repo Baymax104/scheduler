@@ -1,70 +1,85 @@
 <script lang="ts" setup>
-import { ref, watchEffect } from "vue";
+import { computed, reactive, ref, watchEffect } from "vue";
 import { EventColor } from "@/utils/color.ts";
-import ScheduleEvent from "@/model/schedule-event.ts";
+import Plan from "@/model/plan.ts";
 import Task from "@/model/task.ts";
 import { useToast } from "vue-toastification";
 import { Icon } from "@iconify/vue";
-import DialogState from "@/model/dialog-state.ts";
+import useAddDialogStore from "@/stores/add-dialog.ts";
+import dayjs from "dayjs";
+import "dayjs/locale/zh-cn"
 
-const {state} = defineProps<{
-  state: DialogState
-}>()
+dayjs.locale("zh-cn")
 
 const emit = defineEmits<{
-  confirm: [event: ScheduleEvent]
+  confirm: [event: Plan]
 }>()
 
 const toast = useToast()
+const dialog = useAddDialogStore()
 
-const eventName = ref("")
-const eventComment = ref("")
-const selectedColor = ref(EventColor.getRandomColor())
+const planName = ref("")
+const planComment = ref("")
+const planColor = ref(EventColor.getRandomColor())
+
+const tasks = reactive<Array<Task>>([
+  new Task("添加新事项", "0"),
+  new Task("测试1")
+])
+
+const selected = ref<Task>(tasks[0])
+
+const spanText = computed(() => {
+  if (!dialog.span) {
+    return ""
+  }
+  const start = dayjs(dialog.span.start).format("HH:mm")
+  const end = dayjs(dialog.span.end).format("HH:mm")
+  return `${start} - ${end}`
+})
+
 
 function onConfirm() {
-  if (eventName.value === "") {
+  if (planName.value === "") {
     toast.error("名称不能为空")
     return
   }
-  const span = state.extended.span
-  const event = new ScheduleEvent({
-    start: span.start,
-    end: span.end,
-    allDay: span.allDay,
-    task: new Task({
-      name: eventName.value,
-      comment: eventComment.value,
-    })
+  if (!dialog.span) {
+    return
+  }
+  const {start, end, allDay} = dialog.span
+  const plan = new Plan({
+    ...{start, end, allDay},
+    task: new Task(planName.value),
+    comment: planComment.value,
   })
-  emit("confirm", event)
-  state.toggle()
+  emit("confirm", plan)
+  dialog.dismiss()
 }
 
 watchEffect(() => {
-  if (!open) {
-    eventName.value = ""
-    eventComment.value = ""
+  if (!dialog.open) {
+    planName.value = ""
+    planComment.value = ""
+    planColor.value = EventColor.getRandomColor()
   }
 })
 
 </script>
 
 <template>
-  <dialog :class="{'modal-open': state.isOpen()}" class="modal">
+  <dialog :class="{'modal-open': dialog.open}" class="modal">
     <div class="modal-box w-2/6 flex flex-col items-center gap-4 rounded-field">
       <h2 class="font-bold text-xl">添加事项</h2>
 
-      <fieldset class="fieldset w-full">
-        <label class="fieldset-label">事项名称</label>
+      <fieldset class="flex flex-col w-full gap-4">
         <div class="flex items-center gap-2">
-          <input
-            v-model="eventName"
-            class="input grow"
-            placeholder="事项名称"
-            type="text"/>
+          <select v-model="selected" class="select grow">
+            <option v-for="task in tasks" :key="task.id" :value="task">{{task.name}}</option>
+          </select>
           <div class="dropdown dropdown-end">
             <div
-              :style="{'background-color': selectedColor}"
+              :style="{'background-color': planColor}"
               class="rounded-full size-[30px] p-px border-2 border-base-300/90 cursor-pointer"
               tabindex="0"/>
             <div
@@ -75,21 +90,33 @@ watchEffect(() => {
                   <div
                     :style="{'background-color': color}"
                     class="rounded-full size-[20px] cursor-pointer"
-                    @click="selectedColor = color"/>
+                    @click="planColor = color"/>
                 </template>
               </div>
             </div>
           </div>
         </div>
 
-        <label class="fieldset-label">事项备注</label>
-        <textarea v-model="eventComment" class="textarea h-24 w-full max-h-36" placeholder="备注内容"></textarea>
+        <label v-if="selected.id === '0'" class="input w-full">
+          <span class="label">名称</span>
+          <input v-model="planName" type="text"/>
+        </label>
+
+        <label class="input w-full">
+          <span class="label">备注</span>
+          <input v-model="planComment">
+        </label>
+
+        <label class="input w-full">
+          <span class="label">时间段</span>
+          <span class="text-gray-400">{{spanText}}</span>
+        </label>
 
       </fieldset>
 
       <div class="modal-action w-full">
         <form class="flex gap-4" method="dialog">
-          <button class="btn" @click="state.toggle()">
+          <button class="btn" @click="dialog.dismiss()">
             <Icon height="25" icon="ic:round-close" width="25"/>
             取消
           </button>

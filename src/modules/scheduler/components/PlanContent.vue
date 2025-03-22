@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import ScheduleEvent from "@/model/schedule-event.ts";
+import Plan from "@/model/plan.ts";
 
 
-const {event} = defineProps<{ event: ScheduleEvent | null }>()
+const {event} = defineProps<{ event: Plan | null }>()
 
 const emit = defineEmits<{
-  click: [event: ScheduleEvent]
+  click: [event: Plan]
 }>()
 
 function onClick() {
@@ -18,7 +18,7 @@ function onClick() {
 
 <template>
   <div
-    :style="{'background-color': event?.task.color}"
+    :style="{'background-color': event?.color}"
     class="flex flex-col items-center justify-center size-full rounded-md shadow-md px-[10px]"
     @click="onClick">
     <div class="w-full truncate text-lg">
