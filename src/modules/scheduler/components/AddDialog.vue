@@ -52,6 +52,7 @@ function onConfirm() {
     ...{start, end, allDay},
     task: new Task(planName.value),
     comment: planComment.value,
+    color: planColor.value
   })
   emit("confirm", plan)
   dialog.dismiss()

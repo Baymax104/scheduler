@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, useTemplateRef, watchEffect } from "vue";
+import { reactive, ref, useTemplateRef, watchEffect } from "vue";
 import Scheduler from "@/modules/scheduler/components/Scheduler.vue";
 import Header from "@/modules/scheduler/components/Header.vue";
 import { ViewType } from "@/modules/scheduler/model/view-type.ts";
 import PlanContent from "@/modules/scheduler/components/PlanContent.vue";
-import EventDialog from "@/modules/scheduler/components/EventDialog.vue";
+import PlanDialog from "@/modules/scheduler/components/PlanDialog.vue";
 import AddDialog from "@/modules/scheduler/components/AddDialog.vue";
 import Plan from "@/model/plan.ts";
 import useAddDialogStore from "@/stores/add-dialog.ts";
@@ -14,19 +14,22 @@ const schedulerRef = useTemplateRef("scheduler")
 const currentView = ref(ViewType.WEEK)
 const addDialog = useAddDialogStore()
 const planDialog = usePlanDialogStore()
+const plans = reactive<Array<Plan>>([])
 
 watchEffect(() => schedulerRef.value?.switchView(currentView.value))
 
-function onAdd(event: Plan) {
-  schedulerRef.value!!.addEvent(event)
+function onAdd(plan: Plan) {
+  plans.push(plan)
+  schedulerRef.value!!.addPlan(plan)
 }
 
-function onSave(event: Plan) {
-  console.log(event.task.name)
+function onSave(plan: Plan) {
+  schedulerRef.value!!.updatePlan(plan)
 }
 
-function onDelete(event: Plan) {
-  console.log(event.task.name)
+function onDelete(plan: Plan) {
+  plans.splice(plans.indexOf(plan), 1)
+  schedulerRef.value!!.removePlan(plan)
 }
 
 </script>
@@ -34,8 +37,8 @@ function onDelete(event: Plan) {
 <template>
   <div class="flex flex-col size-full">
     <Header
-      :currentView="currentView"
       class="mb-2"
+      :currentView="currentView"
       @gotoDate="schedulerRef?.gotoDate"
       @monthClick="currentView = ViewType.MONTH"
       @nextClick="schedulerRef?.next"
@@ -48,11 +51,11 @@ function onDelete(event: Plan) {
       class="flex-1"
       @select="span => addDialog.show(span)">
       <PlanContent
-        :event="event"
+        :plan="event"
         @click="event => planDialog.show(event)"/>
     </Scheduler>
   </div>
-  <EventDialog
+  <PlanDialog
     @delete="onDelete"
     @save="onSave"/>
   <AddDialog

@@ -29,6 +29,10 @@ watchEffect(() => {
     planName.value = dialog.plan.task.name
     planComment.value = dialog.plan.comment
     planColor.value = dialog.plan.color
+  } else {
+    planName.value = ""
+    planComment.value = ""
+    planColor.value = "#00000000"
   }
 })
 

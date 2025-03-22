@@ -87,11 +87,24 @@ defineExpose({
   today: () => api.value.today(),
   gotoDate: (date: DateInput) => api.value.gotoDate(date),
   switchView: (viewType: ViewType) => api.value.changeView(viewType, new Date()),
-  addEvent: (e: Plan) => {
-    api.value.addEvent({...e, title: e.task.name})
+  addPlan: (plan: Plan) => {
+    api.value.addEvent({
+      ...plan,
+      title: plan.task.name,
+      color: "#00000000",
+      bgColor: plan.color
+    })
     api.value.unselect()
   },
-  removeEvent: (e: Plan) => api.value.getEvents().find((event) => e.id === event.id)?.remove()
+  removePlan: (plan: Plan) => api.value.getEventById(plan.id)?.remove(),
+  updatePlan: (plan: Plan) => {
+    const event = api.value.getEventById(plan.id)
+    if (event && event.extendedProps["task"]) {
+      event.setExtendedProp("task", plan.task)
+      event.setExtendedProp("bgColor", plan.color)
+      event.setExtendedProp("comment", plan.comment)
+    }
+  }
 })
 
 function toPlan(event: EventApi): Plan | null {
@@ -103,8 +116,8 @@ function toPlan(event: EventApi): Plan | null {
     start: event.start!!,
     end: event.end!!,
     allDay: event.allDay,
+    color: event.extendedProps.bgColor,
     task: event.extendedProps.task,
-    color: event.backgroundColor,
     comment: event.extendedProps.comment
   }
 }

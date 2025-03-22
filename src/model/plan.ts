@@ -1,6 +1,5 @@
 import { v4 as uuid } from "uuid";
 import Task from "@/model/task.ts";
-import { EventColor } from "@/utils/color.ts";
 
 export default class Plan {
   id: string = uuid()
@@ -11,18 +10,19 @@ export default class Plan {
   color: string
   comment: string
 
-  constructor({task, start, end, allDay, comment}: {
-    task: Task,
+  constructor({start, end, allDay, task, comment, color}: {
     start: Date,
     end: Date,
     allDay: boolean,
-    comment: string
+    task: Task,
+    comment: string,
+    color: string
   }) {
     this.task = task
     this.start = start
     this.end = end
     this.allDay = allDay
-    this.color = EventColor.getRandomColor()
+    this.color = color
     this.comment = comment
   }
 }
